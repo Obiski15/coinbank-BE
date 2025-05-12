@@ -1,0 +1,27 @@
+/** @type {import("prettier").Config} */
+module.exports = {
+  trailingComma: "es5",
+  semi: false,
+  tabWidth: 2,
+  endOfLine: "auto",
+  singleQuote: false,
+  arrowParens: "avoid",
+  useTabs: false,
+  plugins: ["@ianvs/prettier-plugin-sort-imports"],
+  importOrder: [
+    "<THIRD_PARTY_MODULES>",
+    "",
+    "^@/contollers/(.*)$",
+    "",
+    "^@/routes/(.*)$",
+    "",
+    "^@/services/(.*)$",
+    "",
+    "^@/config/(.*)$",
+    "^@/lib/(.*)$",
+    "^@/utils/(.*)$",
+    "",
+    "^[./]",
+  ],
+  importOrderParserPlugins: ["typescript"],
+}

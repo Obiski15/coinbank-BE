@@ -1,0 +1,54 @@
+{
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:node/recommended",
+    "plugin:import/typescript",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "prettier"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "./tsconfig.json"
+      }
+    }
+  },
+  "rules": {
+    "prettier/prettier": "error",
+    "no-console": "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "req|res|next|val" }],
+    "spaced-comment": "off",
+    "consistent-return": "off",
+    "func-names": "off",
+    "object-shorthand": "off",
+    "no-process-exit": "off",
+    "no-param-reassign": "off",
+    "no-return-await": "off",
+    "no-underscore-dangle": "off",
+    "class-methods-use-this": "off",
+    "prefer-destructuring": ["error", { "object": true, "array": false }],
+    "node/no-unsupported-features/es-syntax": "off",
+    "node/no-missing-import": "off",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "js": "never"
+      }
+    ],
+    "import/no-unresolved": "error"
+  }
+}
