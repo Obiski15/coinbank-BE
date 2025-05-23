@@ -1,8 +1,9 @@
 import mongoose from "mongoose"
 
+import logger from "@/utils/logger"
 import config from "@/config/index"
 
 export default async function connectDB() {
   await mongoose.connect(config.mongoUrl, { dbName: "coinbank" })
-  console.log("connection successfull")
+  logger.info("connection successfull")
 }

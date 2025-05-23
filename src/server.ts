@@ -1,7 +1,10 @@
+import logger from "@/utils/logger"
+
 process.on("uncaughtException", err => {
-  console.log("UNCAUGHT_EXCEPTION 💥")
-  console.log("shutting down...")
-  console.error(err.message)
+  logger.error("UNCAUGHT_EXCEPTION 💥")
+  logger.error("shutting down...")
+  logger.error(err.message)
+
   process.exit(1)
 })
 ;(async () => {
@@ -12,13 +15,13 @@ process.on("uncaughtException", err => {
 
   await connectDB()
   const server = app.listen(config.port, () => {
-    console.log(`App running on port ${config.port}`)
+    logger.info(`App running on port ${config.port}`)
   })
 
   process.on("unhandledRejection", err => {
-    console.log("UNHANDLED_REJECTION 💣")
-    console.log("shutting down....")
-    console.error(err)
+    logger.error("UNHANDLED_REJECTION 💣")
+    logger.error("shutting down....")
+    logger.error(err)
     server.close(() => {
       process.exit(1)
     })

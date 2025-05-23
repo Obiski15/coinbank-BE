@@ -17,7 +17,9 @@
   "author": "Obi Emmnauel",
   "license": "ISC",
   "dependencies": {
+    "@types/validator": "^13.15.0",
     "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
@@ -28,9 +30,12 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.2",
     "morgan": "^1.10.0",
+    "multer": "^2.0.0",
+    "pino": "^9.6.0",
+    "pino-pretty": "^13.0.0",
     "slugify": "^1.6.6",
-    "validator": "^13.15.0",
-    "xss": "^1.0.15"
+    "xss": "^1.0.15",
+    "zod": "^3.24.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -41,7 +46,9 @@
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.15.17",
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
