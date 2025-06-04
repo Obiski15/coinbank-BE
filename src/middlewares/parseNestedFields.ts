@@ -7,7 +7,6 @@ function parseNestedFields(req: Request, res: Response, next: NextFunction) {
 
   // Object.entries(req.body).forEach(([key, value]) => {
   //   if (key.includes(".")) {
-  //     console.log(key)
   //     const [key1, key2] = key.split(".")
   //     if (!Object.keys(data).includes(key1)) data[key1] = {}
   //     data[key1][key2] = value

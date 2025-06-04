@@ -9,12 +9,12 @@ import { IUserDocument } from "./types"
 
 const userSchema = new mongoose.Schema<IUserDocument>(
   {
-    display_name: { type: String, trim: true },
+    display_name: { type: String, trim: true, lowercase: true },
     image: { type: String },
     personal: {
       first_name: { type: String, trim: true, lowercase: true },
       last_name: { type: String, trim: true, lowercase: true },
-      country: { type: String, trim: true, lowercase: true },
+      country: { type: String, trim: true },
       dob: { type: Date },
       phone: {
         code: { type: Number },

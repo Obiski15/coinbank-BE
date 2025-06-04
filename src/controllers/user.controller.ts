@@ -29,7 +29,7 @@ export const updateUser = catchAsync(
     let image: string | undefined
     if (req.file) {
       // upload image to cloud if image is present
-      image = await uploadImage(req.file.buffer)
+      image = await uploadImage(req.file.buffer, res.locals.user._id as string)
     }
 
     // update user
