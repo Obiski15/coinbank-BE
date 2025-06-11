@@ -5,6 +5,7 @@ import morgan from "morgan"
 
 import errorHandler from "@/middlewares/errorHandler"
 
+import authRoute from "@/routes/auth.route"
 import userRoute from "@/routes/user.route"
 
 import config from "@/config/index"
@@ -33,6 +34,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(`${BASE_ROUTE}/user`, userRoute)
+app.use(`${BASE_ROUTE}/auth`, authRoute)
 
 app.use(errorHandler)
 

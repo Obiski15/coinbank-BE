@@ -1,7 +1,7 @@
 import config from "@/config"
-import { CookieOptions, NextFunction, Request, Response } from "express"
-import jwt from "jsonwebtoken"
+import { NextFunction, Request, Response } from "express"
 import { Types } from "mongoose"
+import passport from "passport"
 
 import User from "@/models/user.model"
 
@@ -16,30 +16,23 @@ import {
 import AppError from "@/utils/AppError"
 import catchAsync from "@/utils/catchAsync"
 import createHashToken from "@/utils/createHash"
+import setCookie from "@/utils/setCookie"
+import signJwtToken from "@/utils/signJwtToken"
+
+import "@/services/google.strategy.service"
 
 const signTokenAndSend = (
   res: Response,
   user: { userId: Types.ObjectId; email: string },
   statusCode: number
 ) => {
-  const jwtToken = jwt.sign({ userId: user.userId }, config.jwtSecret, {
-    expiresIn: `${config.jwtSecretExpires}d`,
-  })
+  const jwtToken = signJwtToken(user.userId)
 
-  const cookieOptions: CookieOptions = {
-    httpOnly: true,
-    secure: config.nodeEnv === "production",
-    sameSite: config.nodeEnv === "production" ? "none" : "lax",
-    expires: new Date(
-      Date.now() + config.jwtSecretExpires * 24 * 60 * 60 * 1000
-    ),
-  }
-
-  res.cookie("jwt", jwtToken, cookieOptions)
+  setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
 
   res.status(statusCode).json({
     status: "success",
-    data: { user: { ...user } },
+    data: { user },
   })
 }
 
@@ -168,3 +161,25 @@ export const updatePassword = catchAsync(
     })
   }
 )
+
+// google auth
+export const googleAuth = passport.authenticate("google", {
+  scope: ["profile", "email"],
+})
+
+export const googleAuthCallback = catchAsync(async (req, res, next) => {
+  passport.authenticate(
+    "google",
+    {
+      session: false,
+    },
+    (err: unknown, user: unknown) => {
+      if (err) next(err)
+      if (user) {
+        const { jwtToken } = user as { jwtToken: string }
+        setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
+        res.redirect(`${config.googleAuthRedirect}`)
+      }
+    }
+  )(req, res, next)
+})

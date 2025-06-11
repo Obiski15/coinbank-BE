@@ -25,12 +25,12 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       type: String,
       required: [true, "Login email is required"],
       unique: true,
-      // match: [
-      //   /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-      //   "Invalid email address",
-      // ],
       lowercase: true,
       trim: true,
+    },
+    googleId: {
+      type: String,
+      unique: true,
     },
     password: {
       type: String,

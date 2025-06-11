@@ -4,11 +4,16 @@ interface IConfig {
   mongoUrl: string
   jwtSecret: string
   jwtSecretExpires: number
+  jwtCookieExpires?: number
   saltWorkFactor: number
   allowedOrigins: string[]
   cloudinaryApiSecret: string
   cloudinaryApiKey: string
   cloudinaryCloudName: string
+  googleClientSecret: string
+  googleClientId: string
+  googleAuthRedirect: string
+  googleCallbackURL: string
 }
 
 // Validate required environment variables
@@ -28,20 +33,6 @@ if (!process.env.JWT_SECRET || !process.env.JWT_SECRET_EXPIRES) {
   )
 }
 
-if (!process.env.ALLOWED_ORIGINS) {
-  throw new Error(
-    "ALLOWED ORIGINS is not defined in the environment variables."
-  )
-}
-
-if (
-  !process.env.CLOUDINARY_API_KEY ||
-  !process.env.CLOUDINARY_CLOUD_NAME ||
-  !process.env.CLOUDINARY_API_SECRET
-) {
-  throw new Error("Missing cloudinary credentials")
-}
-
 const config: IConfig = {
   port: +process.env.PORT,
   nodeEnv: process.env.NODE_ENV || "development",
@@ -51,11 +42,20 @@ const config: IConfig = {
   ),
   jwtSecret: process.env.JWT_SECRET,
   jwtSecretExpires: +process.env.JWT_SECRET_EXPIRES,
-  allowedOrigins: process.env.ALLOWED_ORIGINS!.split(","),
+  jwtCookieExpires: process.env.JWT_COOKIE_EXPIRES
+    ? +process.env.JWT_COOKIE_EXPIRES
+    : undefined,
+  allowedOrigins: !process.env.ALLOWED_ORIGINS
+    ? [""]
+    : process.env.ALLOWED_ORIGINS!.split(","),
   saltWorkFactor: 10,
-  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
-  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
-  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
+  cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || "",
+  cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",
+  cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
+  googleClientId: process.env.GOOGLE_CLIENT_ID || "",
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+  googleAuthRedirect: process.env.GOOGLE_AUTH_REDIRECT || "",
+  googleCallbackURL: process.env.GOOGLE_CALLBACK_URL || "",
 }
 
 export default config
