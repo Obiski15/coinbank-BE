@@ -3,6 +3,7 @@ import { Types } from "mongoose"
 export interface IUserDocument {
   _id: Types.ObjectId
   googleId?: string
+  facebookId?: string
   email: string
   display_name?: string
   image?: string

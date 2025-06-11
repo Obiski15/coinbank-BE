@@ -10,10 +10,13 @@ interface IConfig {
   cloudinaryApiSecret: string
   cloudinaryApiKey: string
   cloudinaryCloudName: string
+  baseURL: string
   googleClientSecret: string
   googleClientId: string
   googleAuthRedirect: string
-  googleCallbackURL: string
+  facebookClientSecret: string
+  facebookClientId: string
+  facebookAuthRedirect: string
 }
 
 // Validate required environment variables
@@ -52,10 +55,13 @@ const config: IConfig = {
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET || "",
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY || "",
   cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || "",
+  baseURL: process.env.BASE_URL || "",
   googleClientId: process.env.GOOGLE_CLIENT_ID || "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
   googleAuthRedirect: process.env.GOOGLE_AUTH_REDIRECT || "",
-  googleCallbackURL: process.env.GOOGLE_CALLBACK_URL || "",
+  facebookClientSecret: process.env.FACEBOOK_APP_SECRET || "",
+  facebookClientId: process.env.FACEBOOK_APP_ID || "",
+  facebookAuthRedirect: process.env.FACEBOOK_AUTH_REDIRECT || "",
 }
 
 export default config

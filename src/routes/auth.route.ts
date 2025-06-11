@@ -1,4 +1,6 @@
 import {
+  facebookAuth,
+  facebookAuthCallback,
   forgotPassword,
   googleAuth,
   googleAuthCallback,
@@ -25,6 +27,10 @@ const router = express.Router()
 // google auth route
 router.get("/google", googleAuth)
 router.get("/google/callback", googleAuthCallback)
+
+// facebook auth route
+router.get("/facebook", facebookAuth)
+router.get("/facebook/callback", facebookAuthCallback)
 
 router.post("/login", validateResource(loginSchema), login)
 router.post("/register", validateResource(registerSchema), register)

@@ -10,7 +10,7 @@ const googleStrategy = new GoogleStrategy.Strategy(
   {
     clientID: config.googleClientId,
     clientSecret: config.googleClientSecret,
-    callbackURL: config.googleCallbackURL,
+    callbackURL: `${config.baseURL}/auth/google/callback`,
     scope: ["profile"],
   },
   async (accessToken, refreshToken, profile, done) => {

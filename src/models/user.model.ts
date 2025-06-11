@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       type: String,
       unique: true,
     },
+    facebookId: {
+      type: String,
+      unique: true,
+    },
     password: {
       type: String,
       required: [true, "Password is required"],

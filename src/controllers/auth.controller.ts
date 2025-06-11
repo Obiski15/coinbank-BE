@@ -20,6 +20,7 @@ import setCookie from "@/utils/setCookie"
 import signJwtToken from "@/utils/signJwtToken"
 
 import "@/services/google.strategy.service"
+import "@/services/facebook.stragegy.service"
 
 const signTokenAndSend = (
   res: Response,
@@ -179,6 +180,25 @@ export const googleAuthCallback = catchAsync(async (req, res, next) => {
         const { jwtToken } = user as { jwtToken: string }
         setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
         res.redirect(`${config.googleAuthRedirect}`)
+      }
+    }
+  )(req, res, next)
+})
+
+// facebook auth
+export const facebookAuth = passport.authenticate("facebook")
+
+export const facebookAuthCallback = catchAsync(async (req, res, next) => {
+  passport.authenticate(
+    "facebook",
+    { session: false },
+    (err: unknown, user: unknown) => {
+      if (err) next(err)
+
+      if (user) {
+        const { jwtToken } = user as { jwtToken: string }
+        setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
+        res.redirect(`${config.facebookAuthRedirect}`)
       }
     }
   )(req, res, next)

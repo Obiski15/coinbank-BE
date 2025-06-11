@@ -53,6 +53,9 @@ importers:
       passport:
         specifier: ^0.7.0
         version: 0.7.0
+      passport-facebook:
+        specifier: ^3.0.0
+        version: 3.0.0
       passport-google-oauth2:
         specifier: ^0.2.0
         version: 0.2.0
@@ -114,6 +117,9 @@ importers:
       '@types/passport':
         specifier: ^1.0.17
         version: 1.0.17
+      '@types/passport-facebook':
+        specifier: ^3.0.3
+        version: 3.0.3
       '@types/passport-google-oauth2':
         specifier: ^0.1.10
         version: 0.1.10
@@ -567,8 +573,17 @@ packages:
   '@types/node@22.15.17':
     resolution: {integrity: sha512-wIX2aSZL5FE+MR0JlvF87BNVrtFWf6AE6rxSE9X7OwnVvoyCQjpzSRJ+M87se/4QCkCiebQAqrJ0y6fwIyi7nw==}
 
+  '@types/oauth@0.9.6':
+    resolution: {integrity: sha512-H9TRCVKBNOhZZmyHLqFt9drPM9l+ShWiqqJijU1B8P3DX3ub84NjxDuy+Hjrz+fEca5Kwip3qPMKNyiLgNJtIA==}
+
+  '@types/passport-facebook@3.0.3':
+    resolution: {integrity: sha512-4cwyK2bGMo4Di8eMMLjf9JgDbpptRVYmStuy0ETZSaVo6fcY9+BtB9hCUmLEobUtqNHoIoXIWOCdDA2UynCUyg==}
+
   '@types/passport-google-oauth2@0.1.10':
     resolution: {integrity: sha512-Awm0w8qvAOmxvcO+hLLvEzzpQKqtYrzWcCLt4x59YRjCDPNsTIJUYCDWuK6Hvur39/m7UGKflo2Pnnx2KENG2g==}
+
+  '@types/passport-oauth2@1.4.17':
+    resolution: {integrity: sha512-ODiAHvso6JcWJ6ZkHHroVp05EHGhqQN533PtFNBkg8Fy5mERDqsr030AX81M0D69ZcaMvhF92SRckEk2B0HYYg==}
 
   '@types/passport@1.0.17':
     resolution: {integrity: sha512-aciLyx+wDwT2t2/kJGJR2AEeBz0nJU4WuRX04Wu9Dqc5lSUtwu0WERPHYsLhF9PtseiAMPBGNUOtFjxZ56prsg==}
@@ -2148,6 +2163,10 @@ packages:
     resolution: {integrity: sha512-CiyeOxFT/JZyN5m0z9PfXw4SCBJ6Sygz1Dpl0wqjlhDEGGBP1GnsUVEL0p63hoG1fcj3fHynXi9NYO4nWOL+qQ==}
     engines: {node: '>= 0.8'}
 
+  passport-facebook@3.0.0:
+    resolution: {integrity: sha512-K/qNzuFsFISYAyC1Nma4qgY/12V3RSLFdFVsPKXiKZt434wOvthFW1p7zKa1iQihQMRhaWorVE1o3Vi1o+ZgeQ==}
+    engines: {node: '>= 0.4.0'}
+
   passport-google-oauth2@0.2.0:
     resolution: {integrity: sha512-62EdPtbfVdc55nIXi0p1WOa/fFMM8v/M8uQGnbcXA4OexZWCnfsEi3wo2buag+Is5oqpuHzOtI64JpHk0Xi5RQ==}
 
@@ -3226,9 +3245,25 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
+  '@types/oauth@0.9.6':
+    dependencies:
+      '@types/node': 22.15.17
+
+  '@types/passport-facebook@3.0.3':
+    dependencies:
+      '@types/express': 5.0.1
+      '@types/passport': 1.0.17
+      '@types/passport-oauth2': 1.4.17
+
   '@types/passport-google-oauth2@0.1.10':
     dependencies:
       '@types/express': 5.0.1
+
+  '@types/passport-oauth2@1.4.17':
+    dependencies:
+      '@types/express': 5.0.1
+      '@types/oauth': 0.9.6
+      '@types/passport': 1.0.17
 
   '@types/passport@1.0.17':
     dependencies:
@@ -4912,6 +4947,10 @@ snapshots:
       lines-and-columns: 1.2.4
 
   parseurl@1.3.3: {}
+
+  passport-facebook@3.0.0:
+    dependencies:
+      passport-oauth2: 1.8.0
 
   passport-google-oauth2@0.2.0:
     dependencies:
