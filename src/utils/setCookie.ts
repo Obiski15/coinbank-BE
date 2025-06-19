@@ -11,6 +11,7 @@ export default (
     httpOnly: true,
     secure: config.nodeEnv === "production",
     sameSite: config.nodeEnv === "production" ? "none" : "lax",
+    partitioned: true,
     maxAge: expires ? Date.now() + expires : undefined,
   }
 

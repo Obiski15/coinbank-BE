@@ -4,11 +4,11 @@ import jwt from "jsonwebtoken"
 import User from "@/models/user.model"
 
 import AppError from "@/utils/AppError"
+import { getAuthTokens } from "@/utils/auth"
 import catchAsync from "@/utils/catchAsync"
-import jwtToken from "@/utils/jwtToken"
 
 const protect = catchAsync(async (req, res, next) => {
-  const token: string = jwtToken(req, next)
+  const token: string = getAuthTokens(req)
 
   // verify token
   const { userId } = jwt.verify(token, config.jwtSecret) as { userId: string }

@@ -5,18 +5,14 @@ import User from "@/models/user.model"
 import { IUpdateUserSchema } from "@/schema/user.schema"
 
 import catchAsync from "@/utils/catchAsync"
+import sendResponse from "@/utils/sendResponse"
 import uploadImage from "@/utils/uploadImage"
 
 export const getUser = catchAsync(
   async (req: Request, res, next: NextFunction) => {
     const user = await User.findById(res.locals.user._id)
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        user,
-      },
-    })
+    sendResponse({ res, message: "success", statusCode: 200, data: user })
   }
 )
 
@@ -42,12 +38,7 @@ export const updateUser = catchAsync(
       { new: true, runValidators: true }
     ).lean()
 
-    res.status(200).json({
-      status: "success",
-      data: {
-        user,
-      },
-    })
+    sendResponse({ res, message: "success", statusCode: 200, data: user })
   }
 )
 
@@ -56,9 +47,8 @@ export const deleteUser = catchAsync(
     // delete user
     await User.findOneAndDelete(res.locals.user._id)
 
-    // clear entire user's information
-    // delete image from cloud storage
+    // soft delete user, do not clear user's entire information
 
-    res.sendStatus(204)
+    sendResponse({ res, message: "success", statusCode: 204 })
   }
 )

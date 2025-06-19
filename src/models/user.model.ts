@@ -3,7 +3,7 @@ import config from "@/config"
 import bcrypt from "bcryptjs"
 import mongoose from "mongoose"
 
-import createHashToken from "@/utils/createHash"
+import { createHashToken } from "@/utils/auth"
 
 import { IUserDocument } from "./types"
 

@@ -1,6 +1,5 @@
 import config from "@/config"
 import { NextFunction, Request, Response } from "express"
-import { Types } from "mongoose"
 import passport from "passport"
 import speakeasy from "speakeasy"
 
@@ -17,29 +16,15 @@ import {
 
 import AppError from "@/utils/AppError"
 import catchAsync from "@/utils/catchAsync"
-import createHashToken from "@/utils/createHash"
 import setCookie from "@/utils/setCookie"
-import signJwtToken from "@/utils/signJwtToken"
 
 import "@/services/google.strategy.service"
 import "@/services/facebook.stragegy.service"
 
 import sendMail from "@/services/email.service"
 
-const signTokenAndSend = (
-  res: Response,
-  user: { userId: Types.ObjectId; email: string },
-  statusCode: number
-) => {
-  const jwtToken = signJwtToken(user.userId)
-
-  setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
-
-  res.status(statusCode).json({
-    status: "success",
-    data: { user },
-  })
-}
+import { createHashToken, signTokenAndSend } from "@/utils/auth"
+import sendResponse from "@/utils/sendResponse"
 
 export const register = catchAsync(
   async (
@@ -52,8 +37,7 @@ export const register = catchAsync(
       ...req.body,
     })
 
-    // sign token and send response
-    signTokenAndSend(res, { userId: user._id, email: user.email }, 201)
+    signTokenAndSend(res, user, 201)
   }
 )
 
@@ -77,8 +61,7 @@ export const login = catchAsync(
     if (!isPasswordverified)
       return next(new AppError("Invalid Email or password", 400))
 
-    // sign token and send response
-    signTokenAndSend(res, { userId: user._id, email: user.email }, 200)
+    signTokenAndSend(res, user, 200)
   }
 )
 
@@ -97,11 +80,17 @@ export const forgotPassword = catchAsync(
     await user.save({ validateBeforeSave: false })
 
     // send email to user
+    await sendMail({
+      from: config.defaultEmailAddress,
+      to: req.body.email,
+      html: "",
+      subject: "",
+    })
 
-    // send response
-    res.status(200).json({
-      status: "success",
-      // don't send data
+    sendResponse({
+      res,
+      message: "success",
+      statusCode: 200,
       data: {
         resetToken,
         resetRoute: `${req.headers.origin}/reset-password/${resetToken}`,
@@ -134,9 +123,7 @@ export const resetPassword = catchAsync(
     user.password_reset_token_expires_at = undefined
     await user.save({ validateBeforeSave: true })
 
-    res.status(200).json({
-      status: "success",
-    })
+    sendResponse({ res, message: "success", statusCode: 200 })
   }
 )
 
@@ -162,9 +149,7 @@ export const updatePassword = catchAsync(
     user.confirm_password = req.body.confirm_password
     await user.save({ validateBeforeSave: true })
 
-    res.status(200).json({
-      status: "success",
-    })
+    sendResponse({ res, message: "success", statusCode: 200 })
   }
 )
 
@@ -259,7 +244,12 @@ export const generateEmailVerificationToken = catchAsync(
       responseData.data.otp = code
     }
 
-    res.status(200).json(responseData)
+    sendResponse({
+      res,
+      message: "success",
+      statusCode: 200,
+      data: responseData,
+    })
   }
 )
 
@@ -289,9 +279,7 @@ export const verifyEmailVerificationToken = catchAsync(
     user!.email = req.body.email
     await user?.save({ validateBeforeSave: false })
 
-    res.status(200).json({
-      message: "success",
-    })
+    sendResponse({ res, message: "success", statusCode: 200 })
   }
 )
 

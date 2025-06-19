@@ -4,7 +4,7 @@ import FacebookStrategy from "passport-facebook"
 
 import User from "@/models/user.model"
 
-import signJwtToken from "@/utils/signJwtToken"
+import { signAuthTokens } from "@/utils/auth"
 
 const facebookStrategy = new FacebookStrategy.Strategy(
   {
@@ -32,7 +32,7 @@ const facebookStrategy = new FacebookStrategy.Strategy(
       }
 
       // signToken
-      const jwtToken = signJwtToken(user!._id)
+      const jwtToken = signAuthTokens(user!._id.toString())
 
       return done(null, { user, jwtToken })
     } catch (error) {

@@ -4,7 +4,7 @@ import GoogleStrategy from "passport-google-oauth2"
 
 import User from "@/models/user.model"
 
-import signJwtToken from "@/utils/signJwtToken"
+import { signAuthTokens } from "@/utils/auth"
 
 const googleStrategy = new GoogleStrategy.Strategy(
   {
@@ -36,7 +36,7 @@ const googleStrategy = new GoogleStrategy.Strategy(
       }
 
       // sign jwt token and pass token to google callback alongside user details
-      const jwtToken = signJwtToken(user!._id)
+      const jwtToken = signAuthTokens(user!._id.toString())
 
       return done(null, { user, jwtToken })
     } catch (error) {

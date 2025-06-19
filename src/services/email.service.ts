@@ -36,13 +36,14 @@ function getTransporter(): Transporter {
   return transporter
 }
 
-async function sendMail({ from, to, html, subject }: SendMailOptions) {
+async function sendMail({ from, to, html, subject, ...rest }: SendMailOptions) {
   try {
     const result = await getTransporter().sendMail({
       from,
       to,
       subject,
       html,
+      ...rest,
     })
     return result
   } catch (error) {
