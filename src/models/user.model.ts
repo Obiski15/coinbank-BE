@@ -15,7 +15,9 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       first_name: { type: String, trim: true, lowercase: true },
       last_name: { type: String, trim: true, lowercase: true },
       country: { type: String, trim: true },
-      dob: { type: Date },
+      dob: {
+        type: Date,
+      },
       phone: {
         code: { type: Number },
         number: { type: Number },
@@ -31,9 +33,11 @@ const userSchema = new mongoose.Schema<IUserDocument>(
     googleId: {
       type: String,
       unique: true,
+      sparse: true,
     },
     facebookId: {
       type: String,
+      sparse: true,
       unique: true,
     },
     password: {
@@ -47,8 +51,9 @@ const userSchema = new mongoose.Schema<IUserDocument>(
       required: [true, "Please confirm your password"],
       minLength: [8, "Minimum password length is 8"],
     },
-    reset_token: String,
-    reset_token_expires_at: Date,
+    password_reset_token: String,
+    password_reset_token_expires_at: Date,
+    email_verification_token: String,
   },
   {
     timestamps: true,
@@ -77,8 +82,8 @@ userSchema.methods.comparePassword = async function (
 userSchema.methods.createResetToken = function () {
   const token = crypto.randomBytes(32).toString("hex")
 
-  this.reset_token = createHashToken(token)
-  this.reset_token_expires_at = new Date(Date.now() + 900000)
+  this.password_reset_token = createHashToken(token)
+  this.password_reset_token_expires_at = new Date(Date.now() + 900000)
 
   return token
 }

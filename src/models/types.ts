@@ -19,8 +19,9 @@ export interface IUserDocument {
   }
   password: string
   confirm_password?: string
-  reset_token?: string
-  reset_token_expires_at?: Date
+  password_reset_token?: string
+  password_reset_token_expires_at?: Date
+  email_verification_token?: string
   comparePassword(userPassword: string): Promise<boolean>
   createResetToken(): string
   createdAt: string

@@ -2,12 +2,14 @@ import {
   facebookAuth,
   facebookAuthCallback,
   forgotPassword,
+  generateEmailVerificationToken,
   googleAuth,
   googleAuthCallback,
   login,
   register,
   resetPassword,
   updatePassword,
+  verifyEmailVerificationToken,
 } from "@/controllers/auth.controller"
 import express from "express"
 
@@ -20,6 +22,7 @@ import {
   registerSchema,
   resetPasswordSchema,
   updatePasswordSchema,
+  verifyEmailTokenSchema,
 } from "@/schema/user.schema"
 
 const router = express.Router()
@@ -49,6 +52,15 @@ router.patch(
   "/reset-password",
   validateResource(resetPasswordSchema),
   resetPassword
+)
+
+// email verification
+router.post("/email/verify", protect, generateEmailVerificationToken)
+router.post(
+  "/email/token/verify",
+  protect,
+  validateResource(verifyEmailTokenSchema),
+  verifyEmailVerificationToken
 )
 
 export default router

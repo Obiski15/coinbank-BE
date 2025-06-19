@@ -39,13 +39,13 @@ interface IError extends Error {
 //     field: "image"
 
 function handleDevError(error: IError, res: Response) {
-  logger.error(error, "erro handler")
+  logger.error(error, "error handler")
 
   res.status(error.statusCode ?? 500).json({
     status: error.status ?? "fail",
     error: {
       message: error.message ?? "something went wrong",
-      stausCode: error.statusCode ?? 500,
+      statusCode: error.statusCode ?? 500,
       stack: error.stack,
     },
   })

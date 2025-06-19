@@ -13,10 +13,15 @@ interface IConfig {
   baseURL: string
   googleClientSecret: string
   googleClientId: string
+  googleRefreshToken: string
   googleAuthRedirect: string
   facebookClientSecret: string
   facebookClientId: string
   facebookAuthRedirect: string
+  defaultEmailAddress: string
+  mailtrapPass: string
+  mailtrapUser: string
+  emailVerificationTokenExpires: number
 }
 
 // Validate required environment variables
@@ -58,10 +63,17 @@ const config: IConfig = {
   baseURL: process.env.BASE_URL || "",
   googleClientId: process.env.GOOGLE_CLIENT_ID || "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+  googleRefreshToken: process.env.GOOGLE_REFRESH_TOKEN || "",
   googleAuthRedirect: process.env.GOOGLE_AUTH_REDIRECT || "",
   facebookClientSecret: process.env.FACEBOOK_APP_SECRET || "",
   facebookClientId: process.env.FACEBOOK_APP_ID || "",
   facebookAuthRedirect: process.env.FACEBOOK_AUTH_REDIRECT || "",
+  mailtrapPass: process.env.MAIL_TRAP_PASS || "",
+  mailtrapUser: process.env.MAIL_TRAP_USER || "",
+  defaultEmailAddress: process.env.DEFAULT_EMAIL_ADDRESS || "",
+  emailVerificationTokenExpires: process.env.EMAIL_VERIFICATION_TOKEN_EXPIRES_IN
+    ? +process.env.EMAIL_VERIFICATION_TOKEN_EXPIRES_IN
+    : 0,
 }
 
 export default config

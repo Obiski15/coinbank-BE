@@ -9,12 +9,12 @@ import uploadImage from "@/utils/uploadImage"
 
 export const getUser = catchAsync(
   async (req: Request, res, next: NextFunction) => {
+    const user = await User.findById(res.locals.user._id)
+
     res.status(200).json({
       status: "success",
       data: {
-        user: {
-          ...res.locals.user,
-        },
+        user,
       },
     })
   }
@@ -55,6 +55,9 @@ export const deleteUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // delete user
     await User.findOneAndDelete(res.locals.user._id)
+
+    // clear entire user's information
+    // delete image from cloud storage
 
     res.sendStatus(204)
   }

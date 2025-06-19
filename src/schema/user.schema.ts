@@ -115,6 +115,18 @@ export const updateUserSchema = object({
   }),
 })
 
+export const verifyEmailTokenSchema = object({
+  body: object({
+    otp: string({ required_error: "OTP is required." }).regex(
+      /^\d{6}$/,
+      "OTP must be exactly 6 digits."
+    ),
+    email: string({ required_error: "Email address is required" })
+      .trim()
+      .email({ message: "Please enter a valid email address" }),
+  }),
+})
+
 // schema types
 export type IRegisterSchema = TypeOf<typeof registerSchema>
 export type ILoginSchema = TypeOf<typeof loginSchema>
@@ -122,3 +134,4 @@ export type IResetPasswordSchema = TypeOf<typeof resetPasswordSchema>
 export type IForgotPasswordSchema = TypeOf<typeof forgotPasswordSchema>
 export type IUpdatePasswordSchema = TypeOf<typeof updatePasswordSchema>
 export type IUpdateUserSchema = TypeOf<typeof updateUserSchema>
+export type IVerifyEmailToken = TypeOf<typeof verifyEmailTokenSchema>
