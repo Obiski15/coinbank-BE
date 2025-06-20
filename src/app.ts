@@ -19,7 +19,7 @@ app.use(morgan("dev"))
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || config.allowedOrigins.includes(origin)) {
+      if (!origin || config.CORS.allowedOrigins.includes(origin)) {
         callback(null, origin)
       } else {
         callback(new Error("Origin not allowed. Blocked by cors...."))

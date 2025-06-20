@@ -5,14 +5,15 @@ export default (
   res: Response,
   name: string,
   value: string,
-  expires?: number
+  options: CookieOptions
 ) => {
+  const { maxAge, ...restOptions } = options
   const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: config.nodeEnv === "production",
     sameSite: config.nodeEnv === "production" ? "none" : "lax",
-    partitioned: true,
-    maxAge: expires ? Date.now() + expires : undefined,
+    maxAge: maxAge ? maxAge * 1000 : undefined,
+    ...restOptions,
   }
 
   res.cookie(name, value, cookieOptions)

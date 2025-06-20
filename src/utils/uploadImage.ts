@@ -5,9 +5,9 @@ import sharp from "sharp"
 import AppError from "./AppError"
 
 cloudinary.config({
-  cloud_name: config.cloudinaryCloudName,
-  api_key: config.cloudinaryApiKey,
-  api_secret: config.cloudinaryApiSecret,
+  cloud_name: config.CLOUDINARY.cloudName,
+  api_key: config.CLOUDINARY.apiKey,
+  api_secret: config.CLOUDINARY.apiSecret,
 })
 
 const uploadImage = async (fileBuffer: Buffer, userId: string) => {

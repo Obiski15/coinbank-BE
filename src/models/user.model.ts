@@ -65,7 +65,7 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) next()
 
   // replace password with bcrypt hash
-  this.password = await bcrypt.hash(this.password, config.saltWorkFactor)
+  this.password = await bcrypt.hash(this.password, config.AUTH.saltWorkFactor)
 
   // exclude confirm_password field
   this.confirm_password = undefined

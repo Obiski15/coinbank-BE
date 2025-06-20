@@ -1,16 +1,18 @@
 import { Response } from "express"
 
 interface IResponse {
-  message: string
+  status: string
   statusCode: number
   data?: unknown
+  error?: unknown
   res: Response
 }
 
-const sendResponse = ({ res, message, statusCode, data }: IResponse) => {
+const sendResponse = ({ res, status, statusCode, data, error }: IResponse) => {
   res.status(statusCode).json({
-    message,
+    status,
     data,
+    error,
   })
 }
 

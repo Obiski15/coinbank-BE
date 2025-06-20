@@ -12,7 +12,7 @@ export const getUser = catchAsync(
   async (req: Request, res, next: NextFunction) => {
     const user = await User.findById(res.locals.user._id)
 
-    sendResponse({ res, message: "success", statusCode: 200, data: user })
+    sendResponse({ res, status: "success", statusCode: 200, data: { user } })
   }
 )
 
@@ -38,7 +38,7 @@ export const updateUser = catchAsync(
       { new: true, runValidators: true }
     ).lean()
 
-    sendResponse({ res, message: "success", statusCode: 200, data: user })
+    sendResponse({ res, status: "success", statusCode: 200, data: { user } })
   }
 )
 
@@ -49,6 +49,6 @@ export const deleteUser = catchAsync(
 
     // soft delete user, do not clear user's entire information
 
-    sendResponse({ res, message: "success", statusCode: 204 })
+    sendResponse({ res, status: "success", statusCode: 204 })
   }
 )

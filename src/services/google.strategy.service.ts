@@ -8,8 +8,8 @@ import { signAuthTokens } from "@/utils/auth"
 
 const googleStrategy = new GoogleStrategy.Strategy(
   {
-    clientID: config.googleClientId,
-    clientSecret: config.googleClientSecret,
+    clientID: config.GOOGLE.clientId,
+    clientSecret: config.GOOGLE.clientSecret,
     callbackURL: `${config.baseURL}/auth/google/callback`,
     scope: ["profile"],
   },
@@ -35,10 +35,10 @@ const googleStrategy = new GoogleStrategy.Strategy(
         await user.save({ validateBeforeSave: false })
       }
 
-      // sign jwt token and pass token to google callback alongside user details
-      const jwtToken = signAuthTokens(user!._id.toString())
+      // sign tokens and pass token to google callback alongside user details
+      const tokens = signAuthTokens(user!._id.toString())
 
-      return done(null, { user, jwtToken })
+      return done(null, { user, tokens })
     } catch (error) {
       return done(error, null)
     }

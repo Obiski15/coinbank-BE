@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express"
 
 import logger from "@/utils/logger"
+import sendResponse from "@/utils/sendResponse"
 
 interface IError extends Error {
   isOperational?: string
@@ -39,29 +40,35 @@ interface IError extends Error {
 //     field: "image"
 
 function handleDevError(error: IError, res: Response) {
-  logger.error(error, "error handler")
+  const statusCode = error.statusCode ?? 500
 
-  res.status(error.statusCode ?? 500).json({
+  logger.error(error)
+  sendResponse({
+    res,
     status: error.status ?? "fail",
+    statusCode,
     error: {
       message: error.message ?? "something went wrong",
-      statusCode: error.statusCode ?? 500,
+      statusCode,
       stack: error.stack,
     },
   })
 }
 
 function handleProdError(error: IError, res: Response) {
+  const statusCode = error.statusCode ?? 500
   // handle internal, jwt and db errors
 
   // if(error.name === "JsonWebTokenError")
   // if(error.name === "TokenExpiredError")
 
-  res.status(error.statusCode ?? 500).json({
+  sendResponse({
+    res,
     status: error.status ?? "fail",
+    statusCode,
     error: {
       message: error.message ?? "something went wrong",
-      code: error.statusCode,
+      code: statusCode,
     },
   })
 }

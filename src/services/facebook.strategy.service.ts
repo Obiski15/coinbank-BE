@@ -8,12 +8,12 @@ import { signAuthTokens } from "@/utils/auth"
 
 const facebookStrategy = new FacebookStrategy.Strategy(
   {
-    clientID: config.facebookClientId,
-    clientSecret: config.facebookClientSecret,
+    clientID: config.FACEBOOK.clientId,
+    clientSecret: config.FACEBOOK.clientSecret,
     callbackURL: `${config.baseURL}/auth/facebook/callback`,
     profileFields: ["id", "name", "displayName", "photos", "email"],
   },
-  async (accessTOken, refreshToken, profile, done) => {
+  async (accessToken, refreshToken, profile, done) => {
     try {
       let user = await User.findOne({ facebookId: profile.id })
 
@@ -31,10 +31,10 @@ const facebookStrategy = new FacebookStrategy.Strategy(
         await user.save({ validateBeforeSave: false })
       }
 
-      // signToken
-      const jwtToken = signAuthTokens(user!._id.toString())
+      // signTokens
+      const tokens = signAuthTokens(user!._id.toString())
 
-      return done(null, { user, jwtToken })
+      return done(null, { user, tokens })
     } catch (error) {
       return done(error, null)
     }

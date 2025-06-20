@@ -19,7 +19,7 @@ import catchAsync from "@/utils/catchAsync"
 import setCookie from "@/utils/setCookie"
 
 import "@/services/google.strategy.service"
-import "@/services/facebook.stragegy.service"
+import "@/services/facebook.strategy.service"
 
 import sendMail from "@/services/email.service"
 
@@ -81,7 +81,7 @@ export const forgotPassword = catchAsync(
 
     // send email to user
     await sendMail({
-      from: config.defaultEmailAddress,
+      from: config.MAILTRAP.default.email,
       to: req.body.email,
       html: "",
       subject: "",
@@ -89,7 +89,7 @@ export const forgotPassword = catchAsync(
 
     sendResponse({
       res,
-      message: "success",
+      status: "success",
       statusCode: 200,
       data: {
         resetToken,
@@ -123,7 +123,7 @@ export const resetPassword = catchAsync(
     user.password_reset_token_expires_at = undefined
     await user.save({ validateBeforeSave: true })
 
-    sendResponse({ res, message: "success", statusCode: 200 })
+    sendResponse({ res, status: "success", statusCode: 200 })
   }
 )
 
@@ -149,7 +149,7 @@ export const updatePassword = catchAsync(
     user.confirm_password = req.body.confirm_password
     await user.save({ validateBeforeSave: true })
 
-    sendResponse({ res, message: "success", statusCode: 200 })
+    sendResponse({ res, status: "success", statusCode: 200 })
   }
 )
 
@@ -170,7 +170,7 @@ export const generateEmailVerificationToken = catchAsync(
     const code = speakeasy.totp({
       secret: secret.base32,
       encoding: "base32",
-      step: config.emailVerificationTokenExpires,
+      step: config.AUTH.emailVerificationTokenExpires,
     })
 
     // send verification token
@@ -215,7 +215,7 @@ export const generateEmailVerificationToken = catchAsync(
           <h2>Hello, ${user!.personal?.first_name ?? ""}</h2>
           <p>Your One-Time Password (OTP) is:</p>
           <div class="otp-code">${code}</div>
-          <p>Please use this code to complete your verification. The OTP is valid for ${config.emailVerificationTokenExpires / 60} minutes.</p>
+          <p>Please use this code to complete your verification. The OTP is valid for ${config.AUTH.emailVerificationTokenExpires / 60} minutes.</p>
           <p>If you did not request this, please ignore this email.</p>
           <div class="footer">
             &copy; 2025 coinbank. All rights reserved.
@@ -225,7 +225,7 @@ export const generateEmailVerificationToken = catchAsync(
       </html>
     `
     const mailOptions = {
-      from: config.defaultEmailAddress,
+      from: config.MAILTRAP.default.email,
       to: "random@gmail.com",
       subject: "Your One-Time Password (OTP) for Email Verification",
       html: emailBody,
@@ -246,7 +246,7 @@ export const generateEmailVerificationToken = catchAsync(
 
     sendResponse({
       res,
-      message: "success",
+      status: "success",
       statusCode: 200,
       data: responseData,
     })
@@ -267,7 +267,7 @@ export const verifyEmailVerificationToken = catchAsync(
       encoding: "base32",
       secret,
       token: req.body.otp,
-      step: config.emailVerificationTokenExpires,
+      step: config.AUTH.emailVerificationTokenExpires,
       window: 0,
     })
 
@@ -279,7 +279,7 @@ export const verifyEmailVerificationToken = catchAsync(
     user!.email = req.body.email
     await user?.save({ validateBeforeSave: false })
 
-    sendResponse({ res, message: "success", statusCode: 200 })
+    sendResponse({ res, status: "success", statusCode: 200 })
   }
 )
 
@@ -297,9 +297,19 @@ export const googleAuthCallback = catchAsync(async (req, res, next) => {
     (err: unknown, user: unknown) => {
       if (err) return next(err)
       if (user) {
-        const { jwtToken } = user as { jwtToken: string }
-        setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
-        res.redirect(`${config.googleAuthRedirect}`)
+        const { tokens } = user as {
+          tokens: { refreshToken: string; accessToken: string }
+        }
+
+        Object.entries(tokens).forEach(([key, value]) => {
+          setCookie(res, key, value, {
+            maxAge:
+              config.JWT[
+                key as "refreshTokenExpiresIn" | "accessTokenExpiresIn"
+              ],
+          })
+        })
+        res.redirect(`${config.GOOGLE.authRedirect}`)
       }
     }
   )(req, res, next)
@@ -316,9 +326,19 @@ export const facebookAuthCallback = catchAsync(async (req, res, next) => {
       if (err) return next(err)
 
       if (user) {
-        const { jwtToken } = user as { jwtToken: string }
-        setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
-        res.redirect(`${config.facebookAuthRedirect}`)
+        const { tokens } = user as {
+          tokens: { refreshToken: string; accessToken: string }
+        }
+
+        Object.entries(tokens).forEach(([key, value]) => {
+          setCookie(res, key, value, {
+            maxAge:
+              config.JWT[
+                key as "refreshTokenExpiresIn" | "accessTokenExpiresIn"
+              ],
+          })
+        })
+        res.redirect(`${config.FACEBOOK.authRedirect}`)
       }
     }
   )(req, res, next)

@@ -16,35 +16,101 @@ interface IJwtPayload extends jwt.JwtPayload {
 export const createHashToken = (token: string) =>
   crypto.createHash("sha256").update(token).digest("hex")
 
-export const getAuthTokens = (req: Request) => {
+export const getAuthToken = (value: string, req: Request) => {
   let token
 
-  if (!req.headers.authorization && !req.cookies.jwt) {
-    throw new AppError("Invalid or missing auth token", 401)
-  }
+  const cookie = req.cookies[value] as string | undefined
+  const header = req.headers[value.toLowerCase()] as string | undefined
 
-  if (req.headers.authorization) {
-    if (!req.headers.authorization.startsWith("Bearer"))
+  if (header) {
+    if (!header.startsWith("Bearer"))
       throw new AppError("Invalid auth token", 401)
-    token = req.headers.authorization.split(" ")[1]
+    token = header.split(" ")[1]
   } else {
-    token = req.cookies.jwt
+    token = cookie
   }
 
-  return token
+  return token ?? ""
 }
 
-export const signAuthTokens = (userId: string) => {
-  return jwt.sign({ userId: userId }, config.jwtSecret, {
-    expiresIn: `${config.jwtSecretExpires}d`,
-    algorithm: "HS256",
+export const signToken = ({
+  data,
+  options,
+  secret,
+}: {
+  data: IJwtPayload
+  secret: string
+  options: jwt.SignOptions
+}) => {
+  return jwt.sign(data, secret, {
+    expiresIn: options.expiresIn,
+    algorithm: options.algorithm,
   })
 }
 
-export const verifyAuthTokens = (token: string) => {
-  const payload = jwt.verify(token, config.jwtSecret) as IJwtPayload
+const verifyAccessToken = (req: Request) => {
+  const accessToken = getAuthToken("accessToken", req)
 
-  return payload
+  let id: string
+
+  try {
+    const { userId } = jwt.verify(accessToken, config.JWT.secret) as IJwtPayload
+
+    id = userId
+  } catch (error) {
+    id = ""
+  }
+
+  return id
+}
+
+const verifyRefreshToken = (req: Request, res: Response) => {
+  const refreshToken = getAuthToken("refreshToken", req)
+  const token = jwt.verify(refreshToken, config.JWT.secret) as IJwtPayload
+  const accessToken = signToken({
+    data: { userId: token.userId },
+    options: {
+      algorithm: "HS256",
+      expiresIn: config.JWT.accessTokenExpiresIn,
+    },
+    secret: config.JWT.secret,
+  })
+  setCookie(res, "accessToken", accessToken, {
+    maxAge: config.JWT.accessTokenExpiresIn,
+  })
+  return token.userId
+}
+
+export const verifyAuthTokens = (req: Request, res: Response) => {
+  let userId = verifyAccessToken(req)
+
+  if (!userId) {
+    try {
+      userId = verifyRefreshToken(req, res)
+    } catch (error) {
+      throw new AppError("Unauthorized", 401)
+    }
+  }
+
+  return userId
+}
+
+export const signAuthTokens = (userId: string) => {
+  const refreshToken = signToken({
+    data: { userId },
+    options: {
+      algorithm: "HS256",
+      expiresIn: config.JWT.refreshTokenExpiresIn,
+    },
+    secret: config.JWT.secret,
+  })
+  const accessToken = signToken({
+    data: { userId },
+    options: { algorithm: "HS256", expiresIn: config.JWT.accessTokenExpiresIn },
+    secret: config.JWT.secret,
+  })
+
+  return { refreshToken, accessToken }
 }
 
 export const signTokenAndSend = (
@@ -52,13 +118,19 @@ export const signTokenAndSend = (
   user: IUserDocument,
   statusCode: number
 ) => {
-  const jwtToken = signAuthTokens(user._id.toString())
-
-  setCookie(res, "jwt", jwtToken, config.jwtCookieExpires)
+  const tokens = signAuthTokens(user._id.toString())
+  Object.entries(tokens).forEach(([key, value]) => {
+    setCookie(res, key, value, {
+      maxAge:
+        config.JWT[
+          `${key}ExpiresIn` as "refreshTokenExpiresIn" | "accessTokenExpiresIn"
+        ],
+    })
+  })
 
   sendResponse({
     res,
-    message: "success",
+    status: "success",
     statusCode: statusCode,
     data: { _id: user._id, email: user.email ?? "" },
   })

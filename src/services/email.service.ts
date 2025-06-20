@@ -12,8 +12,8 @@ function createTransporter(): Transporter {
       host: "sandbox.smtp.mailtrap.io",
       port: 2525,
       auth: {
-        user: config.mailtrapUser,
-        pass: config.mailtrapPass,
+        user: config.MAILTRAP.user,
+        pass: config.MAILTRAP.pass,
       },
     })
   }
@@ -22,9 +22,9 @@ function createTransporter(): Transporter {
     auth: {
       type: "OAuth2",
       user: "me@gmail.com",
-      clientId: config.googleClientId,
-      clientSecret: config.googleClientSecret,
-      refreshToken: config.googleRefreshToken,
+      clientId: config.GOOGLE.clientId,
+      clientSecret: config.GOOGLE.clientSecret,
+      refreshToken: config.GOOGLE.refreshToken,
     },
   })
 }
